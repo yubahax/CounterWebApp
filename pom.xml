@@ -116,7 +116,7 @@
         			<version>3.0.0</version>
         			<configuration>
           				<descriptors>
-            					<descriptor>src/assembly/repository.xml</descriptor>
+            					<descriptor>src/main/assembly/repository.xml</descriptor>
           				</descriptors>
         			</configuration>
       			</plugin>
