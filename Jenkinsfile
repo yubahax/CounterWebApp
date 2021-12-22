@@ -1,23 +1,26 @@
-node('test') 
+node() 
 {
-   stage("CheckoutSCM")
+   def SONAR_URL = 'http://192.168.1.120:9000'
+   def SONAR_LOGIN='admin'
+   def SONAR_PASSWORD='Password'
+   stage('Code Checkout')
    {
-       echo "Checking out my code here"
        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'bbb48b43-0e32-4a0d-b833-3d611916d027', url: 'https://github.com/shreys-s/CounterWebApp.git']]])
    }
    stage("Code Build")
    {
        echo "Starting Maven Code Build here"
-       sh 'mvn clean install'
+       sh "/opt/maven/bin/mvn clean install test"
    }
    stage("Unit Testing")
    {
        echo "Starting Unit Test here"
-       //junit '*/target/surefire-reports/*.xml'
+       junit '*/target/surefire-reports/*.xml'
    }
    stage("Sonarqube Analysis")
    {
        echo "Starting Sonarqube analysis"
+      sh "/opt/maven/bin/mvn -e -B sonar:sonar -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} -Dsonar.password=${SONAR_PASSWORD} -Dsonar.scm.disabled=true"
        //sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=admin'
    }
    stage("Artifact Upload")
